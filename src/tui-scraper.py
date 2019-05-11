@@ -18,16 +18,35 @@ def getURL(departureDate, peopleCount, pageIndex):
                  "kolejnosc=up&limit=25")
     return resultURL
 
+def getHotelStars(offer):
+    stars = -1
+    if offer.find("i", class_="stars-small stars-3"):
+        stars = 3
+    if offer.find("i", class_="stars-small stars-4"):
+        stars = 4
+    if offer.find("i", class_="stars-small stars-5"):
+        stars = 5
+    return stars
+
 def getOffers(departureDate, peopleCount):
     url = getURL(departureDate, peopleCount, 1)
     request = requests.get(url)
     soup = bs(request.content, "html.parser")
-    print(url)
+    offers = []
 
 
-    for offer in soup.findAll("section", class_ = OFFER_CSS):
-        print(offer.find("span", {"itemprop" : "name"}).text)
+    for offer in soup.findAll("section", class_=OFFER_CSS):
+        hotelInfo = {}
+        price = offer.find("span", class_="pb-hp-onepreson").contents[0]
+        hotelInfo["hotelName"] = offer.find("span", {"itemprop" : "name"}).text
+        hotelInfo["pricePerPerson"] = int(price[:-3].replace(" ", ""))
+        hotelInfo["offerUrl"] = offer.find("a", class_="oi-h-link")["href"]
+        hotelInfo["hotelStars"] = getHotelStars(offer)
+        offers.append(hotelInfo)
+
+    return offers
 
 
 
-getOffers("12.05.2019", 2)
+offers = getOffers("12.05.2019", 2)
+print(offers)
