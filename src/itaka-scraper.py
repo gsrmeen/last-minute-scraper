@@ -3,19 +3,17 @@ from bs4 import BeautifulSoup as bs
 
 OFFER_CSS = "offer_column offer_column-second col-sm-7 col-lg-8 clearfix"
 
-def getURL(**kwargs):
-    settings = {
-        'departureDate': '2019-05-11',
-        'peopleCount': 5
-    }
+def getURL(departureDate, peopleCount):
+    """
+    departureDate must be formatted like 2019-05-11
+    """
 
-    settings.update(kwargs)
     resultURL = ("https://www.itaka.pl/last-minute/?view=offerList&" +
-                 "package-type=wczasy&adults=" + str(settings["peopleCount"]) +
-                 "&date-from=" + settings["departureDate"] +
-                 "&food=allInclusive&dep-region=warszawa-modlin%2Cwarszawa&" +
-                 "promo=lastMinute&order=priceAsc&total-price=0&page=1&" +
-                 "transport=flight&currency=PLN")
+                 "package-type=wczasy&adults=" + str(peopleCount) +
+                 "&date-from=" + departureDate + "&food=allInclusive&" +
+                 "dep-region=warszawa-modlin%2Cwarszawa&promo=lastMinute&" +
+                 "order=priceAsc&total-price=0&page=1&transport=flight&" +
+                 "currency=PLN")
     return resultURL
 
 
@@ -40,8 +38,8 @@ def getHotelStars(offer):
         stars = 5
     return stars
 
-def getOffers():
-    url = getURL()
+def getOffers(departureDate, peopleCount):
+    url = getURL(departureDate, peopleCount)
     request = requests.get(url)
     soup = bs(request.content, "html.parser")
     offers = []
