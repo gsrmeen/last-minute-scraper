@@ -27,6 +27,20 @@ def getGeoInfo(pageInfo):
     geoInfo["city"] = cutParts[-1]
     return geoInfo
 
+def getHotelStars(offer):
+    stars = -1
+    if offer.find("span", class_="header_stars header_stars-30"):
+        stars = 3
+    if offer.find("span", class_="header_stars header_stars-35"):
+        stars = 3.5
+    if offer.find("span", class_="header_stars header_stars-40"):
+        stars = 4
+    if offer.find("span", class_="header_stars header_stars-45"):
+        stars = 4.5
+    if offer.find("span", class_="header_stars header_stars-50"):
+        stars = 5
+    return stars
+
 
 if __name__ == '__main__':
     url = getURL()
@@ -44,4 +58,8 @@ if __name__ == '__main__':
         hotelInfo["hotelName"] = offer.find("h2", class_="header_title").text
         hotelInfo["pricePerPerson"] = int(price)
         hotelInfo["offerUrl"] = ("https://www.itaka.pl" + offerUrl)
+        hotelInfo["hotelStars"] = getHotelStars(offer)
         print(hotelInfo)
+
+    if offer.find("span", class_="header_stars header_stars-40"):
+        stars = 4
