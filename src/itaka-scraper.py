@@ -3,7 +3,6 @@ from bs4 import BeautifulSoup as bs
 
 OFFER_CSS = "offer_column offer_column-second col-sm-7 col-lg-8 clearfix"
 
-
 def getURL(**kwargs):
     settings = {
         'departureDate': '2019-05-11',
@@ -41,11 +40,11 @@ def getHotelStars(offer):
         stars = 5
     return stars
 
-
-if __name__ == '__main__':
+def getOffers():
     url = getURL()
     request = requests.get(url)
     soup = bs(request.content, "html.parser")
+    offers = []
 
     for offer in soup.findAll("div", class_=OFFER_CSS):
         hotelInfo = {}
@@ -59,7 +58,6 @@ if __name__ == '__main__':
         hotelInfo["pricePerPerson"] = int(price)
         hotelInfo["offerUrl"] = ("https://www.itaka.pl" + offerUrl)
         hotelInfo["hotelStars"] = getHotelStars(offer)
-        print(hotelInfo)
+        offers.append(hotelInfo)
 
-    if offer.find("span", class_="header_stars header_stars-40"):
-        stars = 4
+    return offers
