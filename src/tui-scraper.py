@@ -28,6 +28,13 @@ def getHotelStars(offer):
         stars = 5
     return stars
 
+def getGeoInfo(offer):
+    geoInfo = {}
+    parts = offer.find("nav",class_="breadcrumb-inline-oi").findAll("a", class_="br-item")
+    geoInfo["country"] = parts[0].text
+    geoInfo["city"] = parts[-1].text
+    return geoInfo
+
 def getOffers(departureDate, peopleCount):
     url = getURL(departureDate, peopleCount, 1)
     request = requests.get(url)
@@ -37,6 +44,7 @@ def getOffers(departureDate, peopleCount):
 
     for offer in soup.findAll("section", class_=OFFER_CSS):
         hotelInfo = {}
+        hotelInfo.update(getGeoInfo(offer))
         price = offer.find("span", class_="pb-hp-onepreson").contents[0]
         hotelInfo["hotelName"] = offer.find("span", {"itemprop" : "name"}).text
         hotelInfo["pricePerPerson"] = int(price[:-3].replace(" ", ""))
